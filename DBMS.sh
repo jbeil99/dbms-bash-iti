@@ -1,8 +1,11 @@
 #!/bin/bash
 
+source ./ddl.sh
+source ./validation.sh
+
 # Configuration
 DB_DIR="./databases"
-CURRENT_DB=""
+CURRENT_DB="test"
 CLEAR_CMD="clear"  
 
 # Colors
@@ -12,11 +15,11 @@ BLUE='\033[0;34m'
 YELLOW='\033[0;33m'
 CYAN='\033[0;36m'
 PURPLE='\033[0;35m'
-ENDCOLOR='\033[0m' # No Color
+ENDCOLOR='\033[0m' 
 BOLD='\033[1m'
 
 main_menu (){
-    clear
+    #clear
     if [ -z $CURRENT_DB ]; 
     then
         echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
@@ -37,18 +40,21 @@ main_menu (){
         echo -e "${BLUE}${BOLD}5.${ENDCOLOR} Update Data"
         echo -e "${BLUE}${BOLD}6.${ENDCOLOR} Delete Data"
         echo -e "${BLUE}${BOLD}7.${ENDCOLOR} Drop Table"
+    echo -e "${BLUE}${BOLD}10.${ENDCOLOR} Main menu"
     fi
     
     echo -e "${BLUE}${BOLD}0.${ENDCOLOR} Exit"
-    echo -e "${BLUE}${BOLD}10.${ENDCOLOR} Main menu"
     read -p "ENTER YOUR CHOICE: " choice
 }
 
+header () {
+    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
+    echo -e "${CYAN}${BOLD}            "$*" ${ENDCOLOR}"
+    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
+}
 
 create_db () {
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}            Create Database           ${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
+    header Create Database
     read -p "Enter database name: " db_name
 
     if [ -d $DB_DIR/$db_name ];
@@ -57,7 +63,7 @@ create_db () {
     else
         mkdir -p "$DB_DIR/$db_name"
         echo -e "${GREEN} Databse '$db_name' was created successfully ${ENDCOLOR}"
-        $CURRENT_DB="$db_name"
+        CURRENT_DB=$(($db_name))
     fi
     read -p "Press Enter to continue"
 }
@@ -82,21 +88,15 @@ get_dbs(){
 
 
 list_db () {
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}            List Databases           ${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
-
+    header List Database
     get_dbs
     read -p "Press Enter to continue"
 }
 
 
 connect_db () {
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}          Connect Database           ${ENDCOLOR}"
-    echo -e "${CYAN}${BOLD}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${ENDCOLOR}"
+    header Connect Database
     get_dbs
-
     read -p "Enter Database name to coonect: " db_name
     if [ -d "$DB_DIR/$db_name" ];
     then
@@ -105,29 +105,69 @@ connect_db () {
     else
         echo -e "${RED}Database not found $db_name${ENDCOLOR}"
     fi
-
-    read -p "Press Enter to continue"
     
 }
 
+drop_dp () {
+    header Drop Database
+    get_dbs
+    read -p "Enter Database name to drop: " db_name
+    if [ -d "$DB_DIR/$db_name" ];
+    then
+        CURRENT_DB=""
+        rm -rf $DB_DIR/$db_name
+        echo -e "${GREEEN}Database $db_name Droped${ENDCOLOR}"
+    else
+        echo -e "${RED}Database not found $db_name${ENDCOLOR}"
+    fi
+    read -p "Press Enter to continue"
+}
 
 while true; 
 do
     main_menu
-    
     case $choice in 
     0)
         echo -e "${RED}Nah dont leave meeeeeeeeeeeee${ENDCOLOR}"
         exit 0
         ;;
     1)
-        connect_db
+        if [ -z $CURRENT_DB ];
+        then
+            connect_db
+        else
+            create_table
+        fi
         ;;
     2)
-        list_db
+        if [ -z $CURRENT_DB ];
+        then
+           list_db 
+        else
+            list_tables    
+        fi
         ;;
     3)
-        create_db
+        if [ -z $CURRENT_DB ];
+        then
+          create_db 
+        else
+           get_table_data 
+        fi
+        ;;
+    4)
+        if [ -z $CURRENT_DB ];
+        then
+            drop_dp 
+        else
+          insert_data 
+        fi
+        ;;
+    10)
+        CURRENT_DB=""
+        ;;
+    *)
+        read -p "unkown Choice Press Enter to continue" 
         ;;
     esac
 done
