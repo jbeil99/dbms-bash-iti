@@ -5,7 +5,7 @@ source ./validation.sh
 
 # Configuration
 DB_DIR="./databases"
-CURRENT_DB="test"
+CURRENT_DB=""
 CLEAR_CMD="clear"  
 
 # Colors
@@ -74,7 +74,6 @@ get_dbs(){
     then
         echo -e "${BOLD}${YELLOW} NO DATABASES FOUND ${ENDCOLOR}"
     else
-
         echo -e "${BOLD}${GREEN} All Databases: ${ENDCOLOR}"
         count=1
         for db in $(ls $DB_DIR);
@@ -161,6 +160,12 @@ do
             drop_dp 
         else
           insert_data 
+        fi
+        ;;
+    7)
+        if ! [ -z $CURRENT_DB ];
+        then
+            drop_table
         fi
         ;;
     10)
