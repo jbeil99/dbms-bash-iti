@@ -70,7 +70,7 @@ do
     main_menu
     case $choice in 
     0)
-        echo -e "${RED}Nah dont leave meeeeeeeeeeeee${ENDCOLOR}"
+        echo -e "${GREEN}Thank you for using dBashms ${ENDCOLOR}"
         exit 0
         ;;
     1)
@@ -103,6 +103,18 @@ do
             drop_dp 
         else
           insert_rows 
+        fi
+        ;;
+    5)
+        if ! [ -z $CURRENT_DB ];
+        then
+           update_rows
+        fi
+        ;;
+    6)
+        if ! [ -z $CURRENT_DB ];
+        then
+           delete_rows
         fi
         ;;
     7)

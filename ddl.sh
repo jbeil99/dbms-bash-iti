@@ -24,7 +24,7 @@ drop_dp () {
     then
         CURRENT_DB=""
         rm -rf $DB_DIR/$db_name
-        echo -e "${GREEEN}Database $db_name Droped${ENDCOLOR}"
+        echo -e "${GREEN}Database $db_name Droped${ENDCOLOR}"
     else
         echo -e "${RED}Database not found $db_name${ENDCOLOR}"
     fi
