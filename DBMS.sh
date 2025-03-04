@@ -102,7 +102,7 @@ do
         then
             drop_dp 
         else
-          insert_data 
+          insert_rows 
         fi
         ;;
     7)

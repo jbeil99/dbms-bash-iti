@@ -99,6 +99,8 @@ create_table () {
     row=$(IFS=,; echo "${columns[*]}")
     row_type=$(IFS=","; echo "${types[*]}")
 
+    touch "$DB_DIR/$CURRENT_DB/$table_name"
+    touch "$DB_DIR/$CURRENT_DB/type_$table_name"
     echo "$row" > "$DB_DIR/$CURRENT_DB/$table_name"
     echo "$row_type" > "$DB_DIR/$CURRENT_DB/type_$table_name"
     echo -e "\n${GREEN}Table '$table_name' created successfully!${ENDCOLOR}"
